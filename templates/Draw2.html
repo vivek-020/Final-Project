@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Kids Cartoon Coloring Book 🎨</title>
+<style>
+body { text-align:center; font-family:Arial; background:#f0f8ff; }
+h1 { color:#2c3e50; }
+.cartoons { display:flex; justify-content:center; flex-wrap:wrap; gap:10px; margin:15px; }
+.cartoons img { width:100px; cursor:pointer; border:2px solid #ccc; border-radius:8px; transition:0.3s; }
+.cartoons img:hover { border-color:#2c3e50; transform:scale(1.1); }
+#canvas { border:3px solid #333; background:white; border-radius:10px; margin-top:10px; cursor:crosshair; }
+.tools { margin-top:10px; }
+button, input { padding:8px; margin:3px; border-radius:6px; border:none; }
+</style>
+</head>
+<body>
+
+<h1>🎨 Color Your Favorite Cartoon</h1>
+<p>Select a cartoon to color:</p>
+
+<div class="cartoons">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/0/0b/Doraemon_character.svg" alt="Doraemon" onclick="loadCartoon('https://upload.wikimedia.org/wikipedia/commons/0/0b/Doraemon_character.svg')">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/7/7e/Peppa_Pig.svg" alt="Peppa Pig" onclick="loadCartoon('https://upload.wikimedia.org/wikipedia/commons/7/7e/Peppa_Pig.svg')">
+</div>
+
+<canvas id="canvas" width="600" height="400"></canvas>
+
+<div class="tools">
+  <input type="color" id="colorPicker" value="#ff0000">
+  <input type="range" id="brushSize" min="2" max="40" value="5">
+  <button onclick="setTool('brush')">🖌 Brush</button>
+  <button onclick="setTool('fill')">🪣 Fill</button>
+  <button onclick="clearCanvas()">🗑 Clear</button>
+  <button onclick="saveDrawing()">💾 Save</button>
+</div>
+
+<script>
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+let painting=false, tool='brush';
+let cartoonImg = new Image();
+
+function setTool(t){ tool=t; }
+
+function loadCartoon(src){
+  cartoonImg = new Image();
+  cartoonImg.crossOrigin = "anonymous"; // important!
+  cartoonImg.onload = () => {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.drawImage(cartoonImg,0,0,canvas.width,canvas.height);
+  };
+  cartoonImg.src = src;
+}
+
+// Brush tool
+function startDraw(e){ painting=true; draw(e);}
+function endDraw(){ painting=false; ctx.beginPath();}
+function draw(e){
+  if(!painting || tool!=='brush') return;
+  ctx.lineWidth = document.getElementById("brushSize").value;
+  ctx.strokeStyle = document.getElementById("colorPicker").value;
+  ctx.lineCap = "round";
+  let x = e.offsetX || e.touches[0].clientX - canvas.offsetLeft;
+  let y = e.offsetY || e.touches[0].clientY - canvas.offsetTop;
+  ctx.lineTo(x,y); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x,y);
+}
+
+// Fill bucket tool
+function fillArea(x,y,color){
+  const imgData = ctx.getImageData(0,0,canvas.width,canvas.height);
+  const data = imgData.data; const w=imgData.width;
+  const targetIdx=(y*w+x)*4;
+  const targetColor=[data[targetIdx],data[targetIdx+1],data[targetIdx+2],data[targetIdx+3]];
+  const [r,g,b]=hexToRgb(color);
+  if(sameColor(targetColor,[r,g,b,255])) return;
+  const stack=[[x,y]];
+  while(stack.length){
+    const [cx,cy]=stack.pop();
+    if(cx<0||cx>=w||cy<0||cy>=canvas.height) continue;
+    const i=(cy*w+cx)*4;
+    if(sameColor([data[i],data[i+1],data[i+2],data[i+3]],targetColor)){
+      data[i]=r; data[i+1]=g; data[i+2]=b; data[i+3]=255;
+      stack.push([cx+1,cy],[cx-1,cy],[cx,cy+1],[cx,cy-1]);
+    }
+  }
+  ctx.putImageData(imgData,0,0);
+}
+
+function sameColor(a,b){ return a[0]===b[0] && a[1]===b[1] && a[2]===b[2] && a[3]===b[3]; }
+function hexToRgb(hex){ let x=parseInt(hex.slice(1),16); return [(x>>16)&255,(x>>8)&255,x&255]; }
+
+// Canvas events
+canvas.addEventListener('mousedown', e => {
+  if(tool==='fill') fillArea(e.offsetX,e.offsetY,document.getElementById('colorPicker').value);
+  else startDraw(e);
+});
+canvas.addEventListener('mouseup', endDraw);
+canvas.addEventListener('mousemove', draw);
+canvas.addEventListener('touchstart', startDraw);
+canvas.addEventListener('touchend', endDraw);
+canvas.addEventListener('touchmove', draw);
+
+// Clear & Save
+function clearCanvas(){ ctx.clearRect(0,0,canvas.width,canvas.height); ctx.drawImage(cartoonImg,0,0,canvas.width,canvas.height);}
+function saveDrawing(){ const link=document.createElement('a'); link.download='my_cartoon.png'; link.href=canvas.toDataURL(); link.click();}
+</script>
+
+</body>
+</html>

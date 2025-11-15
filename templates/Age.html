@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Little Learners</title>
+  <style>
+    body {margin:0; font-family:Arial,sans-serif; background:#fff;}
+    #star-bg {position:fixed; top:0; left:0; width:100vw; height:100vh; z-index:0; pointer-events:none;}
+    .top-bar {
+      position: fixed;
+      top: 0;
+      right: 0;
+      left: 0;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center; /* center the title */
+      background: linear-gradient(90deg,#fcaceb 0%,#e999c5 100%);
+      z-index: 10;
+      box-shadow: 0 2px 8px #f9d6f4;
+      padding: 0 60px; /* padding to avoid overlap with back button */
+    }
+    #back-btn {
+      background: none;
+      border: none;
+      color: #fb39b4;
+      font-size: 1.5rem;
+      cursor: pointer;
+      margin-left: 20px;
+      display: none; /* hidden by default */
+      position: absolute;
+      left: 15px;
+      top: 14px;
+      font-weight: bold;
+    }
+    .page-title {
+      font-size: 2rem;
+      color: #fb39b4;
+      font-family: "Comic Sans MS", Arial, cursive;
+      font-weight: bold;
+      letter-spacing: 2px;
+      text-shadow: 0 3px 11px #fff7;
+      margin: 0;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      user-select: none;
+    }
+    .main-content {margin-top:100px; text-align:center; position: relative;}
+    .select-age-title {
+      font-size:2rem; color:#b44ca7; font-weight:bold; margin-bottom:32px;
+      font-family:"Comic Sans MS",Arial,cursive;
+      text-shadow: 0 3px 10px #f4aadb2c;
+    }
+    #age-back-btn {
+      position: fixed;
+      top: 14px;
+      right: 20px;
+      background: none;
+      border: none;
+      color: #fb39b4;
+      font-size: 1.5rem;
+      cursor: pointer;
+      font-weight: bold;
+      z-index: 20;
+    }
+    .boxes-container {position:relative; width:100vw; height:420px;}
+    .floating-box {
+      position:absolute; width:140px; height:140px; background:transparent;
+      top:0; left:0; transition:box-shadow 0.2s;
+      pointer-events:none;
+    }
+    .age-btn {
+      position:absolute;
+      width:70px; height:70px; background:#fcaceb; border:none; border-radius:50%;
+      color:#fb39b4; font-size:2rem; font-weight:bold;
+      box-shadow:0 5px 26px rgba(250,65,146,0.22);
+      cursor:pointer;
+      transition:background 0.22s,transform 0.22s;
+      outline:none;
+      margin:12px;
+      display:flex; align-items:center; justify-content:center;
+      pointer-events:auto;
+    }
+    .age-btn:hover {background:#ffdbf6; transform:scale(1.13);}
+    /* Welcome Buddy Styles */
+    #welcome-section {
+      display:none;
+      position:fixed;
+      left:0;
+      top:0;
+      width:100vw;
+      height:100vh;
+      background:linear-gradient(110deg,#fcc2ff 15%,#f5e2ff 85%);
+      z-index:30;
+      justify-content:center;
+      align-items:center;
+      flex-direction:column;
+      text-align:center;
+      position: relative;
+      overflow: hidden;
+    }
+    #welcome-back-btn {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: none;
+      border: none;
+      color: #fb39b4;
+      font-size: 1.5rem;
+      cursor: pointer;
+      font-weight: bold;
+      user-select: none;
+    }
+    .emoji-box {
+      font-size:10rem; margin-bottom:25px; margin-top:10px; line-height:1.1; text-shadow:0 5px 22px #fb39b49c,0 3px 14px #fff7;
+    }
+    .hello-title {
+      font-size:2.8rem; color:#f744a4; margin-bottom:25px;
+      font-family:"Comic Sans MS",Arial,cursive; font-weight:bold; text-shadow:0 2px 18px #fff2;
+    }
+    .continue-btn {
+      background:#fb39b4; color:#fff; border:none; border-radius:25px;
+      padding:16px 60px; font-size:1.5rem; font-weight:bold;
+      cursor:pointer; margin-top:37px; box-shadow:0 4px 18px #db86c06b;
+      font-family:'Comic Sans MS', Arial, cursive; transition:background 0.2s;
+      outline:none;
+    }
+    .continue-btn:hover {background:#b90674;}
+    /* Responsive Styles */
+    @media(max-width:700px){
+      .main-content{margin-top:72px;}
+      .select-age-title{font-size:1.1rem;}
+      #age-back-btn {font-size: 1.2rem; right: 10px; top: 12px;}
+      .boxes-container{height:210px;}
+      .floating-box{width:72px;height:72px;}
+      .age-btn{width:38px;height:38px;font-size:1.13rem;}
+      .page-title{font-size:1.05rem; position: static; transform:none; margin: 0 auto;}
+      #back-btn {font-size: 1.2rem; left: 10px; top: 12px;}
+      #welcome-back-btn {font-size: 1.2rem; top: 10px; left: 10px;}
+      .emoji-box{font-size:3.9rem;}
+      .hello-title{font-size:1.35rem;}
+      .continue-btn{font-size:0.99rem;padding:10px 22px;}
+    }
+  </style>
+</head>
+<body>
+  <!-- Animated background -->
+  <canvas id="star-bg"></canvas>
+  <!-- Top bar -->
+  <div class="top-bar">
+    <button id="back-btn" onclick="backToAge()">← Back</button>
+    <span class="page-title">Little Learners</span>
+  </div>
+  <!-- Age selection section -->
+  <div class="main-content" id="age-section">
+    <button id="age-back-btn" onclick="ageBack()">← Back</button>
+    <div class="select-age-title">Select your age...</div>
+    <div class="boxes-container" id="boxes-container"></div>
+  </div>
+  <!-- Welcome page section -->
+  <div id="welcome-section">
+    <button id="welcome-back-btn" onclick="backToAge()">← Back</button>
+    <div class="emoji-box" id="welcome-emoji">👋😃</div>
+    <div class="hello-title">welcome buddy</div>
+    <button class="continue-btn" onclick="continueNext()">Continue</button>
+  </div>
+  <script>
+  // MOVING STAR BACKGROUND
+  const colors = ['#fcb6ff', '#83eafd', '#ffe173', '#fc9', '#e7ff8f', '#e69fd0'];
+  const canvas = document.getElementById('star-bg');
+  const ctx = canvas.getContext('2d');
+  let stars = [];
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resizeCanvas);
+  function createStar() {
+    return {
+      x: Math.random() * canvas.width,
+      y: -50,
+      r: 30 + Math.random() * 35,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      speed: 0.8 + Math.random() * 1.2,
+      opacity: 0.21 + Math.random() * 0.22
+    };
+  }
+  function drawStars() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    for (let s of stars) {
+      ctx.globalAlpha = s.opacity;
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, 2 * Math.PI, !1);
+      ctx.fillStyle = s.color;
+      ctx.shadowColor = s.color;
+      ctx.shadowBlur = 16;
+      ctx.fill();
+      ctx.shadowBlur = 0;
+    }
+    ctx.globalAlpha = 1;
+  }
+  function updateStars() {
+    for (let s of stars) {
+      s.y += s.speed;
+    }
+    stars = stars.filter(s => s.y - s.r < canvas.height);
+    while (stars.length < 14) stars.push(createStar());
+  }
+  function animateStarBg() {
+    updateStars();
+    drawStars();
+    requestAnimationFrame(animateStarBg);
+  }
+  resizeCanvas();
+  animateStarBg();
+
+  // AGE BUTTONS WITH MOVEMENT
+  const ages = [3, 4, 5, 6, 7, 8];
+  const motions = [
+    t => [Math.sin(t) * 12, Math.cos(t) * 8],
+    t => [Math.cos(t) * 12, Math.sin(t) * 10],
+    t => [Math.sin(t / 1.5) * 18, Math.cos(t) * 2 + 5],
+    t => [Math.cos(t / 1.2) * 8, Math.sin(t / 2) * 14],
+    t => [Math.sin(t / 1.2) * 16, Math.cos(t / 3) * 8],
+    t => [Math.cos(t / 2) * 11, Math.sin(t / 1.3) * 9]
+  ];
+  const boxesContainer = document.getElementById('boxes-container');
+  let boxes = [];
+
+  function createButtons() {
+    boxesContainer.innerHTML = '';
+    let w = window.innerWidth;
+    let positions = [
+      [w / 4, 90], [w / 2.1, 65], [w / 3, 220],
+      [w / 1.7, 140], [w / 2, 320], [w / 2.6, 250]
+    ];
+    boxes = [];
+    ages.forEach((age, idx) => {
+      let div = document.createElement('div');
+      div.className = 'floating-box';
+      div.style.left = positions[idx][0] + 'px';
+      div.style.top = positions[idx][1] + 'px';
+
+      let btn = document.createElement('button');
+      btn.className = 'age-btn';
+      btn.innerText = age;
+
+      // ✅ Add routing logic based on selected age
+      btn.onclick = () => {
+        switch (age) {
+          case 3:
+            window.location.href = '/3years';
+            break;
+          case 4:
+            window.location.href = '/4years';
+            break;
+          case 5:
+            window.location.href = '/5years';
+            break;
+          case 6:
+            window.location.href = '/6years';
+            break;
+          case 7:
+            window.location.href = '/7years';
+            break;
+          case 8:
+            window.location.href = '/8years';
+            break;
+          default:
+            alert('Invalid age selected!');
+        }
+      };
+
+      div.appendChild(btn);
+      boxesContainer.appendChild(div);
+      boxes.push({ div, btn, base: positions[idx], motion: motions[idx] });
+    });
+  }
+
+  window.addEventListener('resize', createButtons);
+  createButtons();
+
+  function moveButtons() {
+    const now = Date.now() / 900;
+    for (let i = 0; i < boxes.length; ++i) {
+      let t = now + i * 2.5;
+      let [dx, dy] = boxes[i].motion(t);
+      boxes[i].btn.style.left = 30 + dx + 'px';
+      boxes[i].btn.style.top = 30 + dy + 'px';
+    }
+    requestAnimationFrame(moveButtons);
+  }
+  moveButtons();
+
+  // PAGE SWITCHING (kept for structure, not used in redirects)
+  function backToAge() {
+    document.getElementById('welcome-section').style.display = 'none';
+    document.getElementById('age-section').style.display = 'block';
+    document.getElementById('back-btn').style.display = 'none';
+  }
+  function ageBack() {
+    alert('Back button on age selection page clicked.');
+  }
+  function continueNext() {
+    alert('Continue to age activities.');
+  }
+</script>
+
+</body>
+</html>

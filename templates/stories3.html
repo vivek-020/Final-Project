@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Story Time for Kids</title>
+  <style>
+    body {
+      background: url("{{ url_for('static', filename='images/boy.jpg') }}") repeat;
+      background-size: cover;
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 0;
+      min-height: 100vh;
+    }
+    h1 {
+      color: #e67e22;
+      margin-top: 28px;
+      text-shadow: 2px 2px 5px rgba(255,255,255,0.8);
+    }
+    .story-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 28px;
+      justify-content: center;
+      margin: 30px auto 0;
+      width: 96%;
+      max-width: 1500px;
+    }
+    .story-card {
+      background: rgba(255, 251, 229, 0.93);
+      border-radius: 21px;
+      box-shadow: 0 2px 12px rgba(255,193,7,0.10);
+      padding: 16px 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 740px;
+      transition: transform 0.2s, box-shadow 0.2s;
+      margin-bottom: 14px;
+      min-height: 420px;
+    }
+    .story-card:hover {
+      transform: scale(1.03);
+      box-shadow: 0 8px 22px rgba(255,193,7,0.19);
+    }
+    video {
+      width: 700px;
+      height: 400px;
+      border-radius: 18px;
+      outline: none;
+      background-color: #000;
+    }
+    .back-btn {
+      background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+      border: none;
+      border-radius: 18px;
+      padding: 12px 32px;
+      color: #e67e22;
+      font-size: 1.1rem;
+      font-family: inherit;
+      cursor: pointer;
+      margin-top: 12px;
+      box-shadow: 0 2px 12px rgba(231,126,34,0.10);
+      position: absolute;
+      left: 22px;
+      top: 18px;
+    }
+    .voice-guide {
+      position: fixed;
+      bottom: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(255, 251, 229, 0.95);
+      border-radius: 18px;
+      padding: 16px 32px;
+      box-shadow: 0 2px 14px rgba(231,126,34,0.08);
+      color: #e67e22;
+      font-size: 1.1rem;
+      font-family: 'Arial Rounded MT Bold', Arial, sans-serif;
+      z-index: 100;
+    }
+    @media (max-width: 900px) {
+      .story-grid {
+        flex-direction: column;
+        align-items: center;
+      }
+      .story-card {
+        width: 92vw;
+        min-height: 300px;
+      }
+      video {
+        width: 90vw;
+        height: auto;
+      }
+    }
+  </style>
+</head>
+<body onload="speakGuide()">
+  <button class="back-btn" onclick="goBack()">⬅️ Back</button>
+  <h1>📚 Story Time! Watch and Listen to Stories</h1>
+
+  <div class="story-grid">
+    <!-- Local story videos -->
+    <div class="story-card">
+      <video controls>
+        <source src="{{ url_for('static', filename='videos/Rain.mp4') }}" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+      <div style="color:#b4654a; margin-top:5px;">Rain Rainy</div>
+    </div>
+
+    <div class="story-card">
+      <video controls>
+        <source src="{{ url_for('static', filename='videos/Naa.mp4') }}" type="video/mp4">
+      </video>
+      <div style="color:#b4654a; margin-top:5px;">🍌 Na Na Na Banana! _ Fun Banana Song for Kids _ Learn with ChuChu TV Nursery Rhymes for Infants</div>
+    </div>
+
+    <div class="story-card">
+      <video controls>
+        <source src="{{ url_for('static', filename='videos/Diddy.mp4') }}" type="video/mp4">
+      </video>
+      <div style="color:#b4654a; margin-top:5px;">The Diddy</div>
+    </div>
+
+    
+
+  <div class="voice-guide" id="voiceGuide">
+    Watch these wonderful stories and enjoy!
+  </div>
+
+  <script>
+    function speakGuide() {
+      const msg = "Welcome to Story Time! Tap a story to watch and listen. Enjoy!";
+      const synth = window.speechSynthesis;
+      const utter = new SpeechSynthesisUtterance(msg);
+      utter.rate = 1.0;
+      utter.pitch = 1.2;
+      utter.lang = "en-US";
+      synth.cancel();
+      synth.speak(utter);
+      document.getElementById('voiceGuide').textContent = msg;
+    }
+    function goBack() {
+      window.location.href = "/3years";
+    }
+  </script>
+</body>
+</html>

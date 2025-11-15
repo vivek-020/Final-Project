@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kids Learning App – Age 4 Module</title>
+  <meta name="description" content="Interactive, age-appropriate learning activities for 4-year-old kids: alphabets, counting, colors & shapes, matching, tracing, rewards." />
+  <style>
+    :root {
+      --bg: #FFF7E9;
+      --card: #FFFFFF;
+      --primary: #FF8A00;
+      --primary-2: #FFB703;
+      --accent: #5E60CE;
+      --text: #2B2D42;
+      --good: #2ecc71;
+      --bad: #e74c3c;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; height: 100%; }
+
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Noto Sans, Ubuntu, Cantarell, 'Helvetica Neue', Arial, "Apple Color Emoji","Segoe UI Emoji";
+      background: radial-gradient(1200px 500px at 10% -10%, #FFF3C4 0%, #FFF7E9 40%, #FFF7E9 100%);
+      color: var(--text);
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    header {
+      position: sticky; top: 0; z-index: 10;
+      background: rgb(227, 139, 14);
+      color: #fff; padding: 14px 16px; display: flex; align-items: center; gap: 12px;
+      box-shadow: 0 6px 20px rgba(0,0,0,.12);
+    }
+    .brand { font-weight: 800; letter-spacing: .3px; font-size: clamp(18px, 3.2vw, 28px); }
+    .spacer { flex: 1; }
+    .pill {
+      background: rgba(200,200,200,.2);
+      border: 2px solid rgba(255,255,255,.35);
+      padding: 8px 12px; border-radius: 999px;
+      display: flex; align-items: center; gap: 8px;
+      font-weight: 700;
+    }
+    .btn {
+      cursor: pointer; border: none; border-radius: 16px;
+      padding: 12px 16px; font-weight: 700; font-size: 18px;
+      background: var(--accent); color: #fff;
+      box-shadow: 0 6px 14px rgba(0,0,0,.12);
+    }
+    .btn.secondary { background: #fff; color: var(--accent); border: 2px solid var(--accent); }
+    .btn.ghost { background: transparent; color: #fff; border: 2px solid rgba(100,100,100,.5); }
+
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 18px 16px 60px; }
+
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+    .card {
+      background: var(--card);
+      border-radius: 24px; padding: 18px;
+      box-shadow: 0 8px 24px rgba(0,0,0,.08);
+      transition: transform .15s ease, box-shadow .15s ease;
+      display: flex; flex-direction: column; justify-content: space-between;
+      min-height: 170px; margin: 6px 0 8px; font-size: 20px;
+    }
+    .card:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(0,0,0,.12); }
+    .card p { margin: 0; opacity: .8; }
+    .big-emoji { font-size: 44px; }
+
+    .screens { position: relative; }
+    .screen { display: none; animation: fade .2s ease; }
+    .screen.active { display: block; }
+
+    @keyframes fade {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: none; }
+    }
+
+    .toolbar { display: flex; gap: 8px; align-items: center; margin: 10px 0 18px; }
+    .toolbar .back { background: #fff; border: 2px solid #eee; color: #333; }
+
+    .panel { background: #fff; border-radius: 24px; padding: 16px; box-shadow: 0 8px 24px rgba(0,0,0,.08); }
+
+    /* MATCH GAME */
+    .match-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .list { background: #fff; border-radius: 24px; padding: 12px; box-shadow: 0 6px 18px rgba(0,0,0,.06); }
+    .item {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 12px; border: 2px dashed #eee; border-radius: 16px; margin: 8px 0;
+      font-size: 28px; cursor: pointer;
+    }
+    .target { opacity: .7; }
+    .matched { background: #E9FCEB; border: 2px solid #b6f3bf; }
+
+    /* TRACING */
+    .trace-wrap { display: grid; grid-template-columns: 1fr; gap: 12px; }
+    .trace-board { position: relative; border-radius: 24px; overflow: hidden; box-shadow: 0 8px 24px rgba(0,0,0,.08); }
+    .trace-bg {
+      position: absolute; inset: 0;
+      display: grid; place-items: center;
+      font-weight: 900; font-size: clamp(180px, 30vw, 280px);
+      color: rgba(0,0,0,.06); user-select: none;
+    }
+    canvas { display: block; width: 100%; height: 400px; background: #fff; touch-action: none; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">Kids Learning App</div>
+    <div class="spacer"></div>
+    <div class="pill">⭐ Stars: <span id="stars">0</span></div>
+    <button id="muteBtn" class="btn ghost">🔊 Voice</button>
+  </header>
+
+  <main class="wrap screens">
+    <!-- MATCHING GAME -->
+    <section id="match" class="screen active" aria-label="Matching Game">
+      <div class="toolbar">
+        <button class="btn back" onclick="openScreen('home')">🏠 Home</button>
+        <div class="spacer"></div>
+        <button class="btn" onclick="resetMatch()">🔄 Restart</button>
+        <button class="btn" onclick="location.href='text.html'">🆕 New</button>
+      </div>
+      <div class="match-wrap">
+        <div class="list">
+          <h4 class="center">Friends</h4>
+          <div class="item" data-key="cat" onclick="selectFriend(this)">🐱</div>
+          <div class="item" data-key="dog" onclick="selectFriend(this)">🐶</div>
+          <div class="item" data-key="fish" onclick="selectFriend(this)">🐟</div>
+        </div>
+        <div class="list">
+          <h4 class="center">Match here</h4>
+          <div class="item target" data-key="dog" onclick="placeTo(this)">Dog</div>
+          <div class="item target" data-key="fish" onclick="placeTo(this)">Fish</div>
+          <div class="item target" data-key="cat" onclick="placeTo(this)">Cat</div>
+        </div>
+      </div>
+      <p id="matchFeedback" class="center"></p>
+    </section>
+
+    <!-- TRACING -->
+    <section id="trace" class="screen" aria-label="Letter Tracing">
+      <div class="toolbar">
+        <button class="btn back" onclick="openScreen('home')">🏠 Home</button>
+        <div class="spacer"></div>
+        <button class="btn" onclick="prevTrace()">◀️ Prev</button>
+        <button class="btn" onclick="clearTrace()">🧼 Clear</button>
+        <button class="btn" onclick="nextTrace()">Next ▶️</button>
+      </div>
+      <div class="panel trace-wrap">
+        <div class="trace-board">
+          <div class="trace-bg" id="traceBg">A</div>
+          <canvas id="traceCanvas" width="900" height="400" aria-label="Tracing area"></canvas>
+        </div>
+        <p class="center muted">Use your finger or mouse to trace the big letter.</p>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    const screens = ["home","alpha","count","paint","match","trace"];
+    const store = {
+      stars: 0,
+      completed: { alpha:false, count:false, paint:false, match:false, trace:false },
+      muted: false
+    };
+
+    (function initStore(){
+      try {
+        const raw = localStorage.getItem('kids4_app');
+        if(raw){ Object.assign(store, JSON.parse(raw)); }
+      } catch(e){}
+      updateStarsUI(); updateMuteUI();
+    })();
+
+    function saveStore(){ try{ localStorage.setItem('kids4_app', JSON.stringify(store)); }catch(e){} }
+
+    function openScreen(id){
+      screens.forEach(s=> {
+        const el = document.getElementById(s);
+        if(el) el.classList.remove('active');
+      });
+      const active = document.getElementById(id);
+      if(active) active.classList.add('active');
+      if(id==='match') resetMatch();
+      if(id==='trace') mountTrace();
+    }
+
+    function toast(msg){
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.classList.add('show');
+      setTimeout(()=>t.classList.remove('show'), 1200);
+    }
+
+    function celebrate(){
+      const emojis = ['🎉','✨','🎊','⭐','💫','🌈'];
+      for(let i=0;i<20;i++){
+        const s = document.createElement('div');
+        s.className='confetti';
+        s.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+        s.style.left = Math.random()*100+'vw';
+        s.style.animationDuration = (1.2 + Math.random()*1.2)+'s';
+        document.body.appendChild(s);
+        setTimeout(()=>s.remove(), 2200);
+      }
+    }
+
+    function awardStar(activity){
+      if(store.completed[activity]) return;
+      store.completed[activity] = true;
+      store.stars += 1; saveStore(); updateStarsUI();
+      celebrate(); toast('⭐ Yay! You earned a sticker!');
+    }
+
+    function updateStarsUI(){ document.getElementById('stars').textContent = store.stars; }
+
+    const voice = {
+      speak(txt){ if(store.muted) return; try{
+        const u = new SpeechSynthesisUtterance(txt);
+        window.speechSynthesis.cancel();
+        window.speechSynthesis.speak(u);
+      }catch(e){} }
+    }
+
+    document.getElementById('muteBtn').addEventListener('click',()=>{
+      store.muted = !store.muted; saveStore(); updateMuteUI();
+    });
+
+    function updateMuteUI(){
+      const b = document.getElementById('muteBtn');
+      b.setAttribute('aria-pressed', String(store.muted));
+      b.textContent = store.muted ? '🔇 Muted' : '🔊 Voice';
+    }
+
+    /* MATCHING */
+    let selectedFriend = null; let matchedCount = 0;
+    function selectFriend(el){
+      if(el.classList.contains('matched')) return;
+      document.querySelectorAll('#match .item').forEach(i=>i.classList.remove('active'));
+      el.classList.add('active');
+      selectedFriend = el;
+    }
+
+    function placeTo(target){
+      if(!selectedFriend){ toast('Pick a friend first'); return; }
+      const ok = selectedFriend.getAttribute('data-key') === target.getAttribute('data-key');
+      if(ok){
+        target.classList.add('matched');
+        target.textContent = selectedFriend.textContent + ' ✅';
+        selectedFriend.classList.add('matched');
+        selectedFriend.classList.remove('active');
+        matchedCount++;
+        voice.speak('Good match');
+        if(matchedCount>=3){ awardStar('match'); toast('All matched!'); }
+      } else {
+        toast('Oops, try again');
+        voice.speak('Try again');
+      }
+      selectedFriend = null;
+    }
+
+    function resetMatch(){
+      matchedCount=0; selectedFriend=null;
+      document.querySelectorAll('#match .item').forEach(i=>{
+        i.classList.remove('matched','active');
+        const k=i.getAttribute('data-key');
+        if(i.classList.contains('target')){
+          i.textContent = k.charAt(0).toUpperCase()+k.slice(1);
+        } else {
+          i.textContent = (k==='cat'?'🐱':k==='dog'?'🐶':'🐟');
+        }
+      });
+    }
+
+    /* TRACING (placeholder) */
+    function mountTrace(){}
+    function prevTrace(){}
+    function clearTrace(){}
+    function nextTrace(){}
+
+    document.addEventListener('keydown',(e)=>{
+      if(e.key==='Enter' && document.activeElement && document.activeElement.onclick){
+        document.activeElement.click();
+      }
+    });
+  </script>
+</body>
+</html>

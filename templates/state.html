@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Interactive States of India</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #cceeff, #66aaff);
+      margin: 0;
+      padding: 20px;
+      color: #004d40;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      align-items: center;
+    }
+    h1 {
+      margin-bottom: 6px;
+      font-weight: 700;
+      font-size: 2.8rem;
+    }
+    p {
+      margin: 0 0 20px 0;
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #004d40dd;
+    }
+    #container {
+      display: flex;
+      gap: 20px;
+      max-width: 1200px;
+      width: 100%;
+      flex-grow: 1;
+      justify-content: center;
+      align-items: flex-start;
+    }
+    #stateList {
+      width: 40%;
+      max-height: 600px;
+      overflow-y: auto;
+      background: #e0f7fa;
+      border-radius: 12px;
+      padding: 15px;
+      box-shadow: 0 10px 22px rgba(0, 0, 0, 0.1);
+    }
+    button.state {
+      background-color: #0288d1;
+      border: none;
+      border-radius: 10px;
+      color: white;
+      cursor: pointer;
+      font-size: 18px;
+      font-weight: 600;
+      margin: 10px 0;
+      padding: 12px 20px;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+      width: 100%;
+      text-align: left;
+      box-shadow: 0 4px 8px rgba(2, 136, 209, 0.5);
+      user-select: none;
+    }
+    button.state:hover, button.state:focus {
+      background-color: #015f85;
+      transform: scale(1.03);
+      outline: none;
+      box-shadow: 0 6px 12px rgba(1, 95, 133, 0.7);
+    }
+    #map {
+      width: 55%;
+      height: 600px;
+      border-radius: 12px;
+      border: 4px solid #004d40;
+      box-shadow: 0 10px 30px rgba(0, 77, 64, 0.3);
+      transition: box-shadow 0.3s ease;
+    }
+    #map:focus {
+      outline: none;
+      box-shadow: 0 15px 45px rgba(0, 77, 64, 0.6);
+    }
+    #info {
+      margin-top: 20px;
+      font-size: 20px;
+      font-weight: 700;
+      color: #004d40dd;
+      min-height: 50px;
+      user-select: none;
+    }
+    @media (max-width: 900px) {
+      #container {
+        flex-direction: column;
+        align-items: center;
+      }
+      #stateList, #map {
+        width: 90%;
+        max-width: 600px;
+        height: 400px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>States of India</h1>
+  <p>Total States: 28</p>
+
+  <div id="container">
+    <div id="stateList" tabindex="0"></div>
+    <iframe id="map" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3680.817792652992!2d75.85772627436217!3d22.719568975107123!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3963029e6ba5e87d%3A0x9a5f8ef3a521d65c!2sIndia!5e0!3m2!1sen!2sin!4v1675212211771!5m2!1sen!2sin"
+      allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+  </div>
+
+  <div id="info"></div>
+
+  <script>
+    const states = [
+      { name: "Andhra Pradesh", capital: "Amaravati", lat: 16.573, lon: 80.357 },
+      { name: "Arunachal Pradesh", capital: "Itanagar", lat: 27.084, lon: 93.605 },
+      { name: "Assam", capital: "Dispur", lat: 26.143, lon: 91.789 },
+      { name: "Bihar", capital: "Patna", lat: 25.6, lon: 85.1 },
+      { name: "Chhattisgarh", capital: "Raipur", lat: 21.251, lon: 81.629 },
+      { name: "Goa", capital: "Panaji", lat: 15.4909, lon: 73.8278 },
+      { name: "Gujarat", capital: "Gandhinagar", lat: 23.2156, lon: 72.6369 },
+      { name: "Haryana", capital: "Chandigarh", lat: 30.7333, lon: 76.7794 },
+      { name: "Himachal Pradesh", capital: "Shimla", lat: 31.1048, lon: 77.1734 },
+      { name: "Jharkhand", capital: "Ranchi", lat: 23.3441, lon: 85.3096 },
+      { name: "Karnataka", capital: "Bengaluru", lat: 12.9716, lon: 77.5946 },
+      { name: "Kerala", capital: "Thiruvananthapuram", lat: 8.5241, lon: 76.9366 },
+      { name: "Madhya Pradesh", capital: "Bhopal", lat: 23.2599, lon: 77.4126 },
+      { name: "Maharashtra", capital: "Mumbai", lat: 19.076, lon: 72.8777 },
+      { name: "Manipur", capital: "Imphal", lat: 24.817, lon: 93.9368 },
+      { name: "Meghalaya", capital: "Shillong", lat: 25.5788, lon: 91.8933 },
+      { name: "Mizoram", capital: "Aizawl", lat: 23.7271, lon: 92.7176 },
+      { name: "Nagaland", capital: "Kohima", lat: 25.6751, lon: 94.1086 },
+      { name: "Odisha", capital: "Bhubaneshwar", lat: 20.2961, lon: 85.8245 },
+      { name: "Punjab", capital: "Chandigarh", lat: 30.7333, lon: 76.7794 },
+      { name: "Rajasthan", capital: "Jaipur", lat: 26.9124, lon: 75.7873 },
+      { name: "Sikkim", capital: "Gangtok", lat: 27.3389, lon: 88.6065 },
+      { name: "Tamil Nadu", capital: "Chennai", lat: 13.0827, lon: 80.2707 },
+      { name: "Telangana", capital: "Hyderabad", lat: 17.385, lon: 78.4867 },
+      { name: "Tripura", capital: "Agartala", lat: 23.8315, lon: 91.2868 },
+      { name: "Uttar Pradesh", capital: "Lucknow", lat: 26.8467, lon: 80.9462 },
+      { name: "Uttarakhand", capital: "Dehradun", lat: 30.3165, lon: 78.0322 },
+      { name: "West Bengal", capital: "Kolkata", lat: 22.5726, lon: 88.3639 }
+    ];
+
+    const listContainer = document.getElementById('stateList');
+    const map = document.getElementById('map');
+    const info = document.getElementById('info');
+
+    states.forEach(state => {
+      const btn = document.createElement('button');
+      btn.classList.add('state');
+      btn.textContent = state.name;
+      btn.onclick = () => {
+        const speech = new SpeechSynthesisUtterance(state.name);
+        window.speechSynthesis.speak(speech);
+        // Map URL including both state and capital lat-long with zoom level 7
+        map.src = `https://maps.google.com/maps?q=${state.lat},${state.lon}&z=7&output=embed`;
+        info.innerHTML = `<h2>${state.name}</h2><p>Capital: ${state.capital}</p>`;
+      };
+      listContainer.appendChild(btn);
+    });
+  </script>
+</body>
+</html>

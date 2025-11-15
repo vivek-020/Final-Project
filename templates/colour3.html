@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Learn Colors!</title>
+  <style>
+    /* Same CSS as before */
+    body {
+      background: linear-gradient(135deg, #fbe8a6 0%, #f76b1c 100%);
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 0;
+      min-height: 100vh;
+    }
+    h1 {
+      color: #f76b1c;
+      margin-top: 28px;
+    }
+    .color-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 36px;
+      justify-content: center;
+      margin: 40px auto 0;
+      width: 90%;
+      max-width: 1100px;
+    }
+    .color-card {
+      background: #fffbe5;
+      border-radius: 21px;
+      box-shadow: 0 2px 12px rgba(247,107,28,0.12);
+      padding: 26px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-width: 180px;
+      transition: transform 0.2s, box-shadow 0.2s;
+      cursor: pointer;
+    }
+    .color-card:hover {
+      transform: scale(1.06);
+      box-shadow: 0 8px 22px rgba(247,107,28,0.15);
+    }
+    .circle {
+      width: 78px;
+      height: 78px;
+      border-radius: 50%;
+      margin-bottom: 12px;
+      border: 2px solid #eee;
+      box-shadow: 0 2px 5px rgba(90,90,90,0.07);
+    }
+    .back-btn {
+      background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+      border: none;
+      border-radius: 18px;
+      padding: 12px 32px;
+      color: #f76b1c;
+      font-size: 1.1rem;
+      font-family: inherit;
+      cursor: pointer;
+      margin-top: 12px;
+      box-shadow: 0 2px 12px rgba(247,107,28,0.13);
+      position: absolute;
+      left: 22px;
+      top: 18px;
+    }
+    .voice-guide {
+      position: fixed;
+      bottom: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #fffbe5;
+      border-radius: 18px;
+      padding: 16px 32px;
+      box-shadow: 0 2px 14px rgba(247,107,28,0.11);
+      color: #f76b1c;
+      font-size: 1.17rem;
+      font-family: 'Arial Rounded MT Bold', Arial, sans-serif;
+      z-index: 100;
+    }
+    @media (max-width: 900px) {
+      .color-grid {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+  </style>
+</head>
+<body onload="speakGuide(); createColors()">
+<button class="back-btn" onclick="goBack()">⬅️ Back</button>
+  <h1>Let's Learn Colors!</h1>
+  <div class="color-grid" id="colorGrid"></div>
+  <div class="voice-guide" id="voiceGuide">
+    Click any color to hear its name!
+  </div>
+  <script>
+    const colors = [
+      { name: "Red",    color: "#e74c3c" },
+      { name: "Blue",   color: "#3498db" },
+      { name: "Green",  color: "#27ae60" },
+      { name: "Yellow", color: "#f9e79f" },
+      { name: "Purple", color: "#9b59b6" },
+      { name: "Orange", color: "#f39c12" },
+      // Add or remove colors as you wish!
+      { name: "Pink",   color: "#fd5c63" },
+      { name: "Brown",  color: "#8d5524" },
+      { name: "Black",  color: "#222" },
+      { name: "White",  color: "#fff" }
+    ];
+
+    function createColors() {
+      const grid = document.getElementById('colorGrid');
+      grid.innerHTML = '';
+      colors.forEach(c => {
+        const card = document.createElement('div');
+        card.className = 'color-card';
+        card.onclick = () => speakColor(c.name);
+
+        const circle = document.createElement('div');
+        circle.className = 'circle';
+        circle.style.background = c.color;
+
+        const label = document.createElement('div');
+        label.style.marginTop = '8px';
+        label.style.color = c.color === "#fff" ? "#333" : c.color; // Dark text for white color
+        label.style.fontSize = '1.1rem';
+        label.textContent = c.name;
+
+        card.appendChild(circle);
+        card.appendChild(label);
+        grid.appendChild(card);
+      });
+    }
+
+    function speakGuide() {
+      const msg = "Welcome to the colors page! Tap any color to hear its name.";
+      const synth = window.speechSynthesis;
+      const utter = new SpeechSynthesisUtterance(msg);
+      utter.rate = 1.0;
+      utter.pitch = 1.2;
+      utter.lang = "en-US";
+      synth.cancel();
+      synth.speak(utter);
+      document.getElementById('voiceGuide').textContent = msg;
+    }
+    function speakColor(color) {
+      const synth = window.speechSynthesis;
+      const utter = new SpeechSynthesisUtterance(color);
+      utter.rate = 1.15;
+      utter.pitch = 1.25;
+      utter.lang = "en-US";
+      synth.cancel();
+      synth.speak(utter);
+      document.getElementById('voiceGuide').textContent = color + "!";
+    }
+    function goBack() {
+      window.location.href = "/3years";
+    }
+  </script>
+</body>
+</html>

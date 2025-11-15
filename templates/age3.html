@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Learn & Play - Activities for Kids</title>
+  <style>
+    body {
+      background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+     .logout-btn {
+    padding: 8px 15px;
+    background-color: #ff4b5c;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+}
+.logout-btn:hover {
+    background-color: #d90429;
+}
+    h1 {
+      color: #ff6f61;
+      margin-top: 32px;
+    }
+    .activity-btns {
+      display: flex;
+      gap: 40px;
+      margin-top: 60px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .activity-btn {
+      background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+      border: none;
+      border-radius: 24px;
+      width: 180px;
+      height: 180px;
+      box-shadow: 0 8px 20px rgba(252, 182, 159, 0.30);
+      font-size: 2rem;
+      color: white;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s, box-shadow 0.2s;
+      position: relative;
+    }
+    .activity-btn:hover {
+      transform: scale(1.08);
+      box-shadow: 0 16px 32px rgba(252, 182, 159, 0.45);
+    }
+    .activity-btn img {
+      width: 60px;
+      height: 60px;
+      margin-bottom: 10px;
+    }
+    .voice-guide {
+      position: fixed;
+      bottom: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #fffbe5;
+      border-radius: 18px;
+      padding: 18px 36px;
+      box-shadow: 0 2px 14px rgba(252,182,159,0.17);
+      color: #d17e71;
+      font-size: 1.2rem;
+      font-family: 'Arial Rounded MT Bold', Arial, sans-serif;
+      z-index: 100;
+    }
+    
+  </style>
+   <button class="home-btn" onclick="window.location.href='/home'">🏠 Home</button>
+</head>
+<body>
+  <h1>Learn & Play!</h1>
+  <div class="activity-btns">
+    <button class="activity-btn" onclick="window.location.href='/videosof3';">
+  <img src="https://img.icons8.com/color/96/000000/youtube-play.png" alt="Videos">
+  Videos
+</button>
+   <button class="activity-btn" onclick="window.location.href='/rhyme';">
+  <img src="https://img.icons8.com/color/96/000000/musical-notes.png" alt="Rhymes">
+  Rhymes
+</button>
+    <button class="activity-btn" onclick="window.location.href='colour';">
+  <img src="https://img.icons8.com/color/96/000000/paint-palette.png" alt="Colors">
+  Colors
+</button>
+    <button class="activity-btn" onclick="window.location.href='/story';">
+  <img src="https://img.icons8.com/color/96/000000/open-book--v2.png" alt="Stories">
+  Stories
+</button>
+
+
+  </div>
+  <div class="voice-guide" id="voiceGuide">
+    Tap a button to learn Videos, Rhymes, Colors, or Stories! 👆
+  </div>
+  <audio id="audioPlayer"></audio>
+  <script>
+    const audioMessages = {
+      videos: "Great! Let's watch some fun videos. Ready to learn with pictures and songs?",
+      rhymes: "Yay! Let's sing some happy rhymes together!",
+      colors: "Let's learn about colors. Red, Blue, Green and more are waiting for you!",
+      stories: "Let's listen to wonderful stories. Get ready for an adventure!"
+    };
+    function playAudio(activity) {
+      const msg = audioMessages[activity];
+      const synth = window.speechSynthesis;
+      const utter = new SpeechSynthesisUtterance(msg);
+      utter.rate = 0.9;
+      utter.pitch = 1.3;
+      utter.lang = "en-US";
+      synth.cancel(); // Cancel any ongoing speech
+      synth.speak(utter);
+      document.getElementById('voiceGuide').textContent = msg;
+      // Here, you could add code to navigate to activity pages.
+      // window.location.href = activity + ".html";
+    }
+  </script>
+  <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
+</body>
+</html>

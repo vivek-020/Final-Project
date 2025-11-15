@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Fruits & Vegetables</title>
+    <style>
+        body {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #ffb3ba 0%, #ffdfba 50%, #ffffba 100%);
+            min-height: 100%;
+            color: #333;
+        }
+        
+        html {
+            height: 100%;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #2d3748;
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .main-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+        
+        .main-btn {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            padding: 20px 40px;
+            font-size: 1.5rem;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+            font-weight: bold;
+        }
+        
+        .main-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.2);
+        }
+        
+        .main-btn.fruits {
+            background: linear-gradient(45deg, #FF6B6B, #FF5252);
+        }
+        
+        .content-area {
+            min-height: 400px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            border: 2px dashed #e9ecef;
+        }
+        
+        .category-section {
+            display: none;
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        .category-section.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .category-title {
+            font-size: 2rem;
+            text-align: center;
+            margin-bottom: 30px;
+            color: #2d3748;
+        }
+        
+        .items-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .hierarchy-container {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        
+        .category-group {
+            background: #f0f8ff;
+            border-radius: 15px;
+            padding: 20px;
+            border-left: 5px solid #4CAF50;
+        }
+        
+        .category-group h3 {
+            color: #2d3748;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            text-align: center;
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+            padding: 10px;
+            border-radius: 10px;
+        }
+        
+        .category-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+        }
+        
+        .spelling-display {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            text-align: center;
+            display: none;
+            z-index: 1000;
+            border: 3px solid #4CAF50;
+        }
+        
+        .spelling-display.show {
+            display: block;
+            animation: popIn 0.3s ease-out;
+        }
+        
+        @keyframes popIn {
+            from { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
+            to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+        
+        .spelling-text {
+            font-size: 2rem;
+            color: #2d3748;
+            margin-bottom: 20px;
+            letter-spacing: 3px;
+            font-weight: bold;
+        }
+        
+        .word-display {
+            font-size: 1.5rem;
+            color: #4CAF50;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        
+        .close-spelling {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            z-index: 999;
+        }
+        
+        .overlay.show {
+            display: block;
+        }
+        
+        .item-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border: 2px solid transparent;
+        }
+        
+        .item-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            border-color: #4CAF50;
+        }
+        
+        .item-emoji {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+        
+        .item-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #2d3748;
+            margin-bottom: 5px;
+        }
+        
+        .item-category {
+            font-size: 0.9rem;
+            color: #666;
+            font-style: italic;
+        }
+        
+        .back-btn {
+            background: linear-gradient(45deg, #6c757d, #5a6268);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+        
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+        }
+        
+        .welcome-message {
+            text-align: center;
+            font-size: 1.3rem;
+            color: #666;
+            margin-top: 100px;
+        }
+        
+        .speaking-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            display: none;
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="speaking-indicator" id="speakingIndicator">🔊 Speaking...</div>
+    <div class="overlay" id="overlay" onclick="closeSpelling()"></div>
+    <div class="spelling-display" id="spellingDisplay">
+        <div class="spelling-text" id="spellingText"></div>
+        <div class="word-display" id="wordDisplay"></div>
+        <button class="close-spelling" onclick="closeSpelling()">Close</button>
+    </div>
+    
+    <div class="container">
+        <h1>🥕 Fruits & Vegetables Explorer 🍎</h1>
+        
+        <div class="main-buttons" id="mainButtons">
+            <button class="main-btn vegetables" onclick="showVegetables()">
+                🥕 Vegetables
+            </button>
+            <button class="main-btn fruits" onclick="showFruits()">
+                🍎 Fruits
+            </button>
+        </div>
+        
+        <div class="content-area">
+            <div id="welcomeScreen">
+                <div class="welcome-message">
+                    Click on Vegetables or Fruits to explore different categories!
+                </div>
+            </div>
+            
+            <div id="vegetablesSection" class="category-section">
+                <button class="back-btn" onclick="showHome()">← Back to Home</button>
+                <h2 class="category-title">🥕 Fresh Vegetables</h2>
+                <div class="items-grid" id="vegetablesGrid"></div>
+            </div>
+            
+            <div id="fruitsSection" class="category-section">
+                <button class="back-btn" onclick="showHome()">← Back to Home</button>
+                <h2 class="category-title">🍎 Delicious Fruits</h2>
+                <div class="hierarchy-container" id="fruitsHierarchy"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const vegetables = [
+            { name: "Carrot", emoji: "🥕", category: "Root Vegetable" },
+            { name: "Broccoli", emoji: "🥦", category: "Cruciferous" },
+            { name: "Tomato", emoji: "🍅", category: "Fruit Vegetable" },
+            { name: "Lettuce", emoji: "🥬", category: "Leafy Green" },
+            { name: "Bell Pepper", emoji: "🫑", category: "Fruit Vegetable" },
+            { name: "Onion", emoji: "🧅", category: "Bulb Vegetable" },
+            { name: "Potato", emoji: "🥔", category: "Root Vegetable" },
+            { name: "Corn", emoji: "🌽", category: "Grain Vegetable" },
+            { name: "Eggplant", emoji: "🍆", category: "Fruit Vegetable" },
+            { name: "Cucumber", emoji: "🥒", category: "Fruit Vegetable" },
+            { name: "Spinach", emoji: "🥬", category: "Leafy Green" },
+            { name: "Mushroom", emoji: "🍄", category: "Fungi" }
+        ];
+
+        const fruits = [
+            { name: "Apple", emoji: "🍎", category: "Pome Fruits" },
+            { name: "Pear", emoji: "🍐", category: "Pome Fruits" },
+            { name: "Orange", emoji: "🍊", category: "Citrus Fruits" },
+            { name: "Lemon", emoji: "🍋", category: "Citrus Fruits" },
+            { name: "Lime", emoji: "🟢", category: "Citrus Fruits" },
+            { name: "Banana", emoji: "🍌", category: "Tropical Fruits" },
+            { name: "Pineapple", emoji: "🍍", category: "Tropical Fruits" },
+            { name: "Mango", emoji: "🥭", category: "Tropical Fruits" },
+            { name: "Grapes", emoji: "🍇", category: "Berries" },
+            { name: "Strawberry", emoji: "🍓", category: "Berries" },
+            { name: "Blueberry", emoji: "🫐", category: "Berries" },
+            { name: "Watermelon", emoji: "🍉", category: "Melons" },
+            { name: "Peach", emoji: "🍑", category: "Stone Fruits" },
+            { name: "Cherry", emoji: "🍒", category: "Stone Fruits" }
+        ];
+
+        function speakSpelling(name) {
+            // Show speaking indicator
+            const indicator = document.getElementById('speakingIndicator');
+            indicator.style.display = 'block';
+            
+            // Create spelling string (A-P-P-L-E)
+            const spelling = name.split('').join('-');
+            
+            // Use Web Speech API if available
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(spelling);
+                utterance.rate = 0.6;
+                utterance.pitch = 1.1;
+                utterance.volume = 0.8;
+                
+                utterance.onend = function() {
+                    indicator.style.display = 'none';
+                    // Show the spelling and word display
+                    showSpellingDisplay(name, spelling);
+                };
+                
+                speechSynthesis.speak(utterance);
+            } else {
+                // Fallback: show spelling in indicator for browsers without speech support
+                indicator.textContent = `🔊 ${spelling}`;
+                setTimeout(() => {
+                    indicator.style.display = 'none';
+                    indicator.textContent = '🔊 Speaking...';
+                    showSpellingDisplay(name, spelling);
+                }, 2000);
+            }
+        }
+        
+        function showSpellingDisplay(word, spelling) {
+            document.getElementById('spellingText').textContent = spelling;
+            document.getElementById('wordDisplay').textContent = word;
+            document.getElementById('overlay').classList.add('show');
+            document.getElementById('spellingDisplay').classList.add('show');
+        }
+        
+        function closeSpelling() {
+            document.getElementById('overlay').classList.remove('show');
+            document.getElementById('spellingDisplay').classList.remove('show');
+        }
+
+        function createItemCard(item, isVegetable = true) {
+            const clickFunction = isVegetable ? `speakName('${item.name}')` : `speakSpelling('${item.name}')`;
+            return `
+                <div class="item-card" onclick="${clickFunction}">
+                    <span class="item-emoji">${item.emoji}</span>
+                    <div class="item-name">${item.name}</div>
+                    <div class="item-category">${item.category}</div>
+                </div>
+            `;
+        }
+        
+        function speakName(name) {
+            // Show speaking indicator
+            const indicator = document.getElementById('speakingIndicator');
+            indicator.style.display = 'block';
+            
+            // Use Web Speech API if available
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(name);
+                utterance.rate = 0.8;
+                utterance.pitch = 1.1;
+                utterance.volume = 0.8;
+                
+                utterance.onend = function() {
+                    indicator.style.display = 'none';
+                };
+                
+                speechSynthesis.speak(utterance);
+            } else {
+                // Fallback: show name in indicator for browsers without speech support
+                indicator.textContent = `🔊 ${name}`;
+                setTimeout(() => {
+                    indicator.style.display = 'none';
+                    indicator.textContent = '🔊 Speaking...';
+                }, 2000);
+            }
+        }
+
+        function showVegetables() {
+            document.getElementById('welcomeScreen').style.display = 'none';
+            document.getElementById('mainButtons').style.display = 'none';
+            document.getElementById('fruitsSection').classList.remove('active');
+            document.getElementById('vegetablesSection').classList.add('active');
+            
+            const grid = document.getElementById('vegetablesGrid');
+            grid.innerHTML = vegetables.map(item => createItemCard(item, true)).join('');
+        }
+
+        function showFruits() {
+            document.getElementById('welcomeScreen').style.display = 'none';
+            document.getElementById('mainButtons').style.display = 'none';
+            document.getElementById('vegetablesSection').classList.remove('active');
+            document.getElementById('fruitsSection').classList.add('active');
+            
+            // Group fruits by category
+            const groupedFruits = {};
+            fruits.forEach(fruit => {
+                if (!groupedFruits[fruit.category]) {
+                    groupedFruits[fruit.category] = [];
+                }
+                groupedFruits[fruit.category].push(fruit);
+            });
+            
+            // Create hierarchy display
+            const hierarchy = document.getElementById('fruitsHierarchy');
+            hierarchy.innerHTML = Object.keys(groupedFruits).map(category => `
+                <div class="category-group">
+                    <h3>${category}</h3>
+                    <div class="category-items">
+                        ${groupedFruits[category].map(fruit => createItemCard(fruit, false)).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function showHome() {
+            document.getElementById('vegetablesSection').classList.remove('active');
+            document.getElementById('fruitsSection').classList.remove('active');
+            document.getElementById('welcomeScreen').style.display = 'block';
+            document.getElementById('mainButtons').style.display = 'flex';
+        }
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'993232b274203aab',t:'MTc2MTIzMjYxMi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

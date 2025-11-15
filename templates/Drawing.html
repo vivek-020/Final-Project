@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Kids Drawing & Fill Coloring 🎨</title>
+<style>
+  body {text-align: center; font-family: Arial; background: #f3f6ff;}
+  h1 {color: #2d6cdf;}
+  #canvas {
+    border: 3px solid #000;
+    border-radius: 10px;
+    background: white;
+    cursor: crosshair;
+    touch-action: none;
+  }
+  .tools {
+    margin-top: 10px;
+  }
+  button, input[type=color], input[type=range] {
+    padding: 8px;
+    margin: 5px;
+    border-radius: 8px;
+    border: none;
+  }
+</style>
+</head>
+<body>
+
+<h1>🎨 Drawing Pad with Colour Filling</h1>
+
+<canvas id="canvas" width="600" height="400"></canvas><br>
+
+<div class="tools">
+  <input type="color" id="colorPicker" value="#ff0000" title="Pick Colour">
+  <input type="range" id="brushSize" min="2" max="40" value="5" title="Brush Size">
+  <button onclick="setTool('brush')">🖌 Brush</button>
+  <button onclick="setTool('fill')">🪣 Fill</button>
+  <button onclick="clearCanvas()">🗑 Clear</button>
+  <button onclick="saveDrawing()">💾 Save</button>
+</div>
+
+<script>
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+let painting = false;
+let currentTool = 'brush';
+
+function setTool(tool) {
+  currentTool = tool;
+}
+
+// Brush/Pencil Drawing Logic
+function startPosition(e) {
+  painting = true;
+  draw(e);
+}
+function endPosition() {
+  painting = false;
+  ctx.beginPath();
+}
+function draw(e) {
+  if (!painting || currentTool !== 'brush') return;
+  ctx.lineWidth = document.getElementById("brushSize").value;
+  ctx.strokeStyle = document.getElementById("colorPicker").value;
+  ctx.lineCap = "round";
+  let x = e.offsetX || e.touches[0].clientX - canvas.offsetLeft;
+  let y = e.offsetY || e.touches[0].clientY - canvas.offsetTop;
+  ctx.lineTo(x, y);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(x, y);
+}
+
+// ----- Fill Bucket Tool (Flood Fill Algorithm) -----
+function fillArea(x, y, fillColor) {
+  const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  const data = imgData.data;
+  const width = imgData.width;
+  const height = imgData.height;
+
+  // Get clicked pixel color
+  const clickedPos = (y * width + x) * 4;
+  const targetColor = [data[clickedPos], data[clickedPos + 1], data[clickedPos + 2], data[clickedPos + 3]];
+
+  const [r, g, b] = hexToRgb(fillColor);
+
+  if (isSameColor(targetColor, [r, g, b, 255])) return;
+
+  const stack = [[x, y]];
+  while (stack.length) {
+    const [cx, cy] = stack.pop();
+    if (cx < 0 || cx >= width || cy < 0 || cy >= height) continue;
+    const i = (cy * width + cx) * 4;
+    if (isSameColor([data[i], data[i + 1], data[i + 2], data[i + 3]], targetColor)) {
+      data[i] = r;
+      data[i + 1] = g;
+      data[i + 2] = b;
+      data[i + 3] = 255;
+      stack.push([cx + 1, cy], [cx - 1, cy], [cx, cy + 1], [cx, cy - 1]);
+    }
+  }
+  ctx.putImageData(imgData, 0, 0);
+}
+function isSameColor(a, b) {
+  return a[0] === b[0] && a[1] === b[1] && a[2] === b[2] && a[3] === b[3];
+}
+function hexToRgb(hex) {
+  let bigint = parseInt(hex.slice(1), 16);
+  return [(bigint >> 16) & 255, (bigint >> 8) & 255, bigint & 255];
+}
+
+// Canvas Event Listeners
+canvas.addEventListener("mousedown", (e) => {
+  if (currentTool === 'fill') {
+    fillArea(e.offsetX, e.offsetY, document.getElementById("colorPicker").value);
+  } else startPosition(e);
+});
+canvas.addEventListener("mouseup", endPosition);
+canvas.addEventListener("mousemove", draw);
+
+canvas.addEventListener("touchstart", startPosition);
+canvas.addEventListener("touchend", endPosition);
+canvas.addEventListener("touchmove", draw);
+
+// Clear & Save
+function clearCanvas() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
+function saveDrawing() {
+  const link = document.createElement('a');
+  link.download = 'my_art.png';
+  link.href = canvas.toDataURL();
+  link.click();
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Choose Your Learning Adventure</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
+
+    /* Animated gradient background */
+    @keyframes gradientShift {
+      0% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    html, body {
+      height: 100%;
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(270deg, #89f7fe, #66a6ff, #a18cd1, #fbc2eb);
+      background-size: 800% 800%;
+      animation: gradientShift 20s ease infinite;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    body {
+      flex-direction: column;
+      text-align: center;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    h1 {
+      font-size: 3.2rem;
+      margin-bottom: 60px;
+      text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.3);
+      user-select: none;
+    }
+
+    .button-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+      max-width: 900px;
+      width: 100%;
+    }
+
+    button.btn {
+      cursor: pointer;
+      border: none;
+      border-radius: 14px;
+      padding: 20px 48px;
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #fff;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+      transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.4s ease;
+      user-select: none;
+      flex: 1 1 200px;
+      max-width: 220px;
+    }
+
+    button.btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .riddle-btn {
+      background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+      color: #4f1a1a;
+      font-weight: 700;
+    }
+
+    .quiz-btn {
+      background: linear-gradient(135deg, #a18cd1, #fbc2eb);
+      color: #3f2b57;
+      font-weight: 700;
+    }
+
+    .state-btn {
+      background: linear-gradient(135deg, #84fab0, #8fd3f4);
+      color: #0f3b4a;
+      font-weight: 700;
+    }
+
+    .solar-btn {
+      background: linear-gradient(135deg, #f6d365, #fda085);
+      color: #53350a;
+      font-weight: 700;
+    }
+
+    .home-btn {
+      position: fixed;
+      top: 20px;
+      right: 30px;
+      background: linear-gradient(135deg, #43e97b, #38f9d7);
+      font-size: 1.25rem;
+      padding: 12px 28px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      color: #fff;
+      user-select: none;
+      transition: background 0.33s ease, transform 0.33s ease;
+      z-index: 10;
+    }
+
+    .home-btn:hover {
+      background: linear-gradient(135deg, #11998e, #38ef7d);
+      transform: scale(1.07);
+    }
+
+    /* Responsive scaling for smaller screens */
+    @media(max-width: 600px) {
+      h1 {
+        font-size: 2.2rem;
+        margin-bottom: 40px;
+      }
+      button.btn {
+        max-width: 100%;
+        flex: 1 1 100%;
+        padding: 18px 30px;
+        font-size: 1.25rem;
+      }
+      .home-btn {
+        font-size: 1rem;
+        padding: 10px 20px;
+        top: 12px;
+        right: 12px;
+      }
+    }
+    .videos {
+      background: #000000;
+      color: white;
+    }
+
+    .videos:hover {
+      background: #333333;
+      transform: scale(1.1);
+    }
+    .logout-btn {
+    padding: 8px 15px;
+    background-color: #ff4b5c;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+}
+.logout-btn:hover {
+    background-color: #d90429;
+}
+  </style>
+</head>
+<body>
+
+  <button class="home-btn" onclick="window.location.href='/'">Home</button>
+
+  <h1>Choose Your Learning Adventure!</h1>
+
+  <div class="button-container">
+    <button class="btn riddle-btn" onclick="window.location.href='/8r'">Riddle</button>
+    <button class="btn quiz-btn" onclick="window.location.href='/8p'">Quiz</button>
+    <button class="btn state-btn" onclick="window.location.href='/state'">States and Capitals</button>
+    <button class="btn solar-btn" onclick="window.location.href='/solar'">Solar System</button>
+    <button class="btn videos" onclick="window.location.href='/videos8'">
+    <span class="emoji">🎬</span> Video Time
+  </button><a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
+  </div>
+
+</body>
+</html>

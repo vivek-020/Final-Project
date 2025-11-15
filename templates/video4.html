@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Kids Learning (Age 4)</title>
+</head> 
+<style> 
+    b{
+        text-align: center;
+        font-size: 25px;
+        color: coral;
+    }
+    body{
+    
+        background-image: url("{{ url_for('static', filename='images/boy.jpg') }}");
+        background-repeat: no-repeat;
+        background-size:contain;
+        background-position:left;
+    
+        float: right;
+    }
+    video{
+        border-radius: 5%;
+        border:solid black;
+        border-width: 5px;
+    }
+</style>
+<body>
+
+    <video width="700px" height="360px" controls>
+        <source src="{{ url_for('static', filename='videos/ducks.mp4') }}" type="video/webm"> your browser does not support the video tag.
+    </video>  <br/>
+    <b>Duckling video</b>
+    <br/>
+    <video width="700px" height="360px" controls>
+        <source src=" {{ url_for('static', filename='videos/ABC.mp4') }}" type="video/mp4"> your browser does not support the video tag.
+    </video> <br/>
+      <b>ABC Phonics Song with Sounds for Children - Alphabet Song with Two Words for Each Letter(720P_HD)</b>
+       <br/>
+</body>  
+</html>

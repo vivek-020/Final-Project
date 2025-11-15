@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Body - Click & Learn (Sound)</title>
+<style>
+  body {
+    text-align: center;
+    background-color: #f8fcff;
+    font-family: Arial, sans-serif;
+  }
+  h1 {
+    color: #0077b6;
+  }
+  .container {
+    position: relative;
+    display: inline-block;
+  }
+  .container img {
+    width: 400px;
+    height: auto;
+  }
+  .hotspot {
+    position: absolute;
+    cursor: pointer;
+    border-radius: 50%;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .hotspot:hover {
+    opacity: 0.3;
+    background-color: rgba(255, 255, 0, 0.3);
+  }
+</style>
+</head>
+<body>
+
+<h1>My Body - Click & Learn</h1>
+
+<div class="container">
+  <img src="https://i.ibb.co/q306qBz5/images.jpg" alt="My Body">
+
+  <!-- Head -->
+  <div class="hotspot" style="top: 60px; left: 180px; width: 60px; height: 60px;" onclick="playSound('head')"></div>
+
+  <!-- Hair -->
+  <div class="hotspot" style="top: 35px; left: 160px; width: 100px; height: 60px;" onclick="playSound('hair')"></div>
+
+  <!-- Eye -->
+  <div class="hotspot" style="top: 110px; left: 190px; width: 50px; height: 30px;" onclick="playSound('eye')"></div>
+
+  <!-- Eyebrow -->
+  <div class="hotspot" style="top: 90px; left: 185px; width: 60px; height: 20px;" onclick="playSound('eyebrow')"></div>
+
+  <!-- Ear -->
+  <div class="hotspot" style="top: 115px; left: 130px; width: 30px; height: 40px;" onclick="playSound('ear')"></div>
+  <div class="hotspot" style="top: 115px; left: 250px; width: 30px; height: 40px;" onclick="playSound('ear')"></div>
+
+  <!-- Nose -->
+  <div class="hotspot" style="top: 130px; left: 205px; width: 30px; height: 30px;" onclick="playSound('nose')"></div>
+
+  <!-- Mouth -->
+  <div class="hotspot" style="top: 155px; left: 195px; width: 50px; height: 30px;" onclick="playSound('mouth')"></div>
+
+  <!-- Chin -->
+  <div class="hotspot" style="top: 180px; left: 195px; width: 50px; height: 20px;" onclick="playSound('chin')"></div>
+
+  <!-- Neck -->
+  <div class="hotspot" style="top: 200px; left: 195px; width: 40px; height: 20px;" onclick="playSound('neck')"></div>
+
+  <!-- Chest -->
+  <div class="hotspot" style="top: 220px; left: 180px; width: 80px; height: 40px;" onclick="playSound('chest')"></div>
+
+  <!-- Stomach -->
+  <div class="hotspot" style="top: 270px; left: 180px; width: 80px; height: 40px;" onclick="playSound('stomach')"></div>
+
+  <!-- Arm -->
+  <div class="hotspot" style="top: 220px; left: 110px; width: 40px; height: 100px;" onclick="playSound('arm')"></div>
+  <div class="hotspot" style="top: 220px; left: 280px; width: 40px; height: 100px;" onclick="playSound('arm')"></div>
+
+  <!-- Thumb -->
+  <div class="hotspot" style="top: 300px; left: 95px; width: 25px; height: 25px;" onclick="playSound('thumb')"></div>
+  <div class="hotspot" style="top: 300px; left: 310px; width: 25px; height: 25px;" onclick="playSound('thumb')"></div>
+
+  <!-- Finger -->
+  <div class="hotspot" style="top: 310px; left: 75px; width: 40px; height: 25px;" onclick="playSound('finger')"></div>
+  <div class="hotspot" style="top: 310px; left: 315px; width: 40px; height: 25px;" onclick="playSound('finger')"></div>
+
+  <!-- Leg -->
+  <div class="hotspot" style="top: 330px; left: 175px; width: 40px; height: 100px;" onclick="playSound('leg')"></div>
+  <div class="hotspot" style="top: 330px; left: 215px; width: 40px; height: 100px;" onclick="playSound('leg')"></div>
+
+  <!-- Knee -->
+  <div class="hotspot" style="top: 400px; left: 185px; width: 30px; height: 30px;" onclick="playSound('knee')"></div>
+  <div class="hotspot" style="top: 400px; left: 225px; width: 30px; height: 30px;" onclick="playSound('knee')"></div>
+
+  <!-- Foot -->
+  <div class="hotspot" style="top: 470px; left: 170px; width: 40px; height: 40px;" onclick="playSound('foot')"></div>
+  <div class="hotspot" style="top: 470px; left: 220px; width: 40px; height: 40px;" onclick="playSound('foot')"></div>
+
+  <!-- Toe -->
+  <div class="hotspot" style="top: 490px; left: 170px; width: 40px; height: 20px;" onclick="playSound('toe')"></div>
+  <div class="hotspot" style="top: 490px; left: 220px; width: 40px; height: 20px;" onclick="playSound('toe')"></div>
+</div>
+
+<script>
+function playSound(part) {
+  const audio = new Audio('sounds/' + part + '.mp3'); // audio folder
+  audio.play();
+}
+</script>
+
+</body>
+</html>

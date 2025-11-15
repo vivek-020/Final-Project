@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Child Learning Home</title>
+<style>
+  body {
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(135deg, #ffeaa7, #81ecec 80%);
+      margin: 0; 
+      padding: 2rem;
+      text-align: center;
+  }
+  .profile-pic {
+      width: 120px; height: 120px;
+      border-radius: 50%;
+      border: 3px solid #22a6b3;
+      object-fit: cover;
+      margin-bottom: 1rem;
+      background: #dfe6e9;
+  }
+  input, select {
+      margin: 0.5rem 0;
+      padding: 0.5rem;
+      font-size: 1rem;
+  }
+  button {
+      background-color: #6c5ce7;
+      border: none;
+      color: white;
+      padding: 0.7rem 1.5rem;
+      font-size: 1rem;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-top: 1rem;
+  }
+  button:hover {
+      background-color: #4834d4;
+  }
+  #editProfileDiv {
+      margin-top: 2rem;
+      border: 2px dashed #6c5ce7;
+      padding: 1rem;
+      border-radius: 15px;
+  }
+</style>
+</head>
+<body>
+  <h1>Welcome to Your Learning Home</h1>
+  <div id="profileSection">
+    <img id="profilePic" class="profile-pic" src="/uploads/default.png" alt="Profile Picture" />
+    <h2 id="username"></h2>
+    <p id="email"></p>
+  </div>
+
+  <button id="logoutBtn">Logout</button>
+
+  <div id="editProfileDiv">
+    <h3>Edit Profile</h3>
+    <label>
+      Change Profile Pic:
+      <input type="file" id="profilePicInput" accept="image/*" />
+    </label><br/>
+    <label>
+      Username:
+      <input type="text" id="usernameInput" />
+    </label><br/>
+    <label>
+      Select Age:
+      <select id="ageSelect">
+        <option value="3">3 Years</option>
+        <option value="4">4 Years</option>
+        <option value="5">5 Years</option>
+        <option value="6">6 Years</option>
+        <option value="7">7 Years</option>
+        <option value="8">8 Years</option>
+      </select>
+    </label><br/>
+    <button id="saveProfileBtn">Save Profile</button>
+  </div>
+
+<script>
+const backendURL = 'http://localhost:3000';
+
+async function fetchProfile() {
+  try {
+    const res = await fetch(backendURL + '/profile');
+    if(res.ok){
+      const user = await res.json();
+      document.getElementById('username').textContent = user.username;
+      document.getElementById('email').textContent = user.email;
+      document.getElementById('profilePic').src = backendURL + user.profilePic;
+
+      document.getElementById('usernameInput').value = user.username;
+      document.getElementById('ageSelect').value = user.age || '3';
+    } else {
+      alert("Not logged in - Redirecting to login page.");
+      window.location.href = '/login.html';
+    }
+  } catch (e) {
+    console.error(e);
+    alert("Error fetching profile data");
+  }
+}
+
+document.getElementById('logoutBtn').addEventListener('click', async () => {
+  await fetch(backendURL + '/logout', {
+    method: 'POST'
+  });
+  window.location.href = '/login.html';
+});
+
+document.getElementById('saveProfileBtn').addEventListener('click', async () => {
+  const formData = new FormData();
+  const username = document.getElementById('usernameInput').value;
+  const age = document.getElementById('ageSelect').value;
+  const fileInput = document.getElementById('profilePicInput');
+
+  formData.append('username', username);
+  formData.append('age', age);
+  if(fileInput.files.length > 0){
+    formData.append('profilePic', fileInput.files[0]);
+  }
+
+  try {
+    const res = await fetch(backendURL + '/profile', {
+      method: 'PUT',
+      body: formData
+    });
+    if(res.ok){
+      alert('Profile updated!');
+      fetchProfile();
+      fileInput.value = '';  // clear file input
+    } else {
+      alert('Failed to update profile.');
+    }
+  } catch(e) {
+    console.error(e);
+    alert('Error updating profile.');
+  }
+});
+
+// Initial fetch of profile on page load
+window.onload = fetchProfile;
+</script>
+</body>
+</html>

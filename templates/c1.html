@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Coloring Page for Kids (Age 5)</title>
+<style>
+    body {
+        text-align: center;
+        background-color: #FFF8E1;
+        font-family: "Comic Sans MS", cursive;
+    }
+    h1 {
+        color: #FF7043;
+    }
+    .color-picker {
+        margin: 10px;
+    }
+    svg {
+        border: 3px solid #FFCC80;
+        background-color: white;
+        border-radius: 10px;
+        width: 80%;
+        max-width: 500px;
+        cursor: pointer;
+        box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+    }
+</style>
+</head>
+<body>
+
+<h1>🎨 Fun Coloring Page for Kids</h1>
+<p>Select a color and click on a part of the picture to fill it!</p>
+
+<!-- Color Picker -->
+<input type="color" id="colorPicker" class="color-picker" value="#FF0000">
+
+<!-- SVG Drawing (House, Tree, Sun, Clouds) -->
+<svg id="coloringArea" viewBox="0 0 300 300">
+    <!-- Sun -->
+    <circle cx="250" cy="50" r="30" fill="#FFF176" stroke="black"/>
+
+    <!-- Cloud -->
+    <ellipse cx="70" cy="50" rx="30" ry="20" fill="#E0F7FA" stroke="black"/>
+    <ellipse cx="100" cy="50" rx="30" ry="20" fill="#E0F7FA" stroke="black"/>
+    <ellipse cx="85" cy="35" rx="30" ry="20" fill="#E0F7FA" stroke="black"/>
+
+    <!-- House Body -->
+    <rect x="80" y="130" width="120" height="100" fill="#FFCCBC" stroke="black"/>
+
+    <!-- House Roof -->
+    <polygon points="70,130 150,70 230,130" fill="#D84315" stroke="black"/>
+
+    <!-- Door -->
+    <rect x="135" y="180" width="30" height="50" fill="#6D4C41" stroke="black"/>
+
+    <!-- Tree Trunk -->
+    <rect x="30" y="160" width="20" height="70" fill="#8D6E63" stroke="black"/>
+
+    <!-- Tree Leaves -->
+    <circle cx="40" cy="140" r="30" fill="#66BB6A" stroke="black"/>
+</svg>
+
+<script>
+    const svg = document.getElementById("coloringArea");
+    const colorPicker = document.getElementById("colorPicker");
+
+    // Change color of clicked part
+    svg.addEventListener("click", function(e) {
+        if (e.target.tagName !== 'svg') {
+            e.target.setAttribute("fill", colorPicker.value);
+        }
+    });
+</script>
+
+</body>
+</html>

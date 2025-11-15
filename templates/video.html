@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Kids Learning (Age 8)</title>
+</head> 
+<style> 
+    b{
+        text-align: center;
+        font-size: 25px;
+        color: coral;
+    }
+    body{
+    
+        background-image: url("{{ url_for('static', filename='images/boy.jpg') }}");
+        background-repeat: no-repeat;
+        background-size:contain;
+        background-position:left;
+    
+        float: right;
+    }
+    video{
+        border-radius: 5%;
+        border:solid black;
+        border-width: 5px;
+    }
+</style>
+<body>
+
+    <video width="700px" height="360px" controls>
+        <source src=" {{ url_for('static', filename='videos/counting.mp4') }}" type="video/webm"> your browser does not support the video tag.
+    </video>  <br/>
+    <b>Soloar system</b>
+    <br/>
+    <video width="700px" height="360px" controls>
+        <source src=" {{ url_for('static', filename='videos/wheels.mp4') }}" type="video/mp4"> your browser does not support the video tag.
+    </video> <br/>
+      <b> Wheels on a bus rhymes</b>
+
+       <br/>
+      
+</body>  
+</html>

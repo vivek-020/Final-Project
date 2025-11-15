@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fun Learning</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap');
+
+  body {
+    font-family: 'Comic Neue', cursive;
+    text-align: center;
+    margin:0; padding:0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(120deg, #ff9a9e, #fad0c4, #a1c4fd, #c2e9fb);
+    background-size: 400% 400%;
+    animation: rainbowBG 15s ease infinite;
+  }
+
+  @keyframes rainbowBG {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+  }
+
+  h1 {
+    font-size: 48px;
+    color: #ff6f61;
+    margin-bottom: 40px;
+    animation: bounce 1.5s infinite;
+  }
+   .videos {
+      background: #000000;
+      color: white;
+    }
+
+    .videos:hover {
+      background: #333333;
+      transform: scale(1.1);
+    }
+  
+
+  @keyframes bounce {
+    0%,100%{transform: translateY(0);}
+    50%{transform: translateY(-15px);}
+  }
+
+  .btn {
+    display: inline-block;
+    margin: 20px;
+    padding: 20px 40px;
+    font-size: 24px;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: transform 0.3s, background 0.3s;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  }
+
+  .riddle { background: linear-gradient(135deg, #f6d365, #fda085);}
+  .riddle:hover { transform: scale(1.1); background: linear-gradient(135deg, #fda085, #f6d365);}
+
+  .quiz { background: linear-gradient(135deg, #42a5f5, #1e88e5);}
+  .quiz:hover { transform: scale(1.1); background: linear-gradient(135deg, #1e88e5, #42a5f5);}
+
+  .blanks { background: linear-gradient(135deg, #f093fb, #f5576c);}
+  .blanks:hover { transform: scale(1.1); background: linear-gradient(135deg, #f5576c, #f093fb);}
+
+  .home-btn {
+    position: absolute;
+    top: 20px; left: 20px;
+    padding: 15px 25px;
+    font-size: 20px;
+    border: none;
+    border-radius: 20px;
+    background: linear-gradient(135deg, #6a11cb, #2575fc);
+    color: #fff;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    transition: transform 0.3s, background 0.3s;
+  }
+  .home-btn:hover { transform: scale(1.1); background: linear-gradient(135deg, #2575fc, #6a11cb);}
+  .logout-btn {
+    padding: 8px 15px;
+    background-color: #ff4b5c;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+}
+.logout-btn:hover {
+    background-color: #d90429;
+}
+</style>
+</head>
+<body>
+
+<button class="home-btn" onclick="window.location.href='/home'">🏠 Home</button>
+
+<h1>🎉 Welcome Kids! 🎉</h1>
+<p style="font-size:22px;">Choose what you want to play today:</p>
+
+<button class="btn riddle" onclick="window.location.href='/6r'">🧩 Riddle Time</button>
+<button class="btn quiz" onclick="window.location.href='/6p'">❓ Quiz Fun</button>
+<button class="btn blanks" onclick="window.location.href='/6b'">😺 Blanks</button>
+  <button class="btn videos" onclick="window.location.href='/videos6'">
+    <span class="emoji">🎬</span> Video Time
+  </button>
+<a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
+</body>
+</html>
